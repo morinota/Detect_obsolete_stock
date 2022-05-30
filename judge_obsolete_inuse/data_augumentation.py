@@ -1,4 +1,4 @@
-from textwrap import fill
+
 from typing import Dict, Tuple, List
 import matplotlib.pyplot as plt
 import torch
@@ -169,7 +169,7 @@ def delete_data_augmentated_files(dataset_augmentated: Dataset_augmentation):
                     _delete_file(path=file_path)
 
 
-def conduct_offline_data_augmentation():
+def conduct_offline_data_augmentation(N=100):
     image_dir = Config.image_dir_inuse_obsolete
 
     # 元の画像に対して、Data Augumentationを実施していく
@@ -183,20 +183,21 @@ def conduct_offline_data_augmentation():
         'color_jitter',  # ランダムに明るさ、コントラスト、彩度、色相を変化させる.
         'random_resized_crop',  # ランダムに切り抜いた後にリサイズを行う.
     ]
-    for data_augumentated_type in augumentated_type_list:
-        data_transform = get_transform_for_data_augmentation(
-            augumentated_type=data_augumentated_type
-        )
-        dataset_augmentated = Dataset_augmentation(
-            root=image_dir, transform=data_transform)
-        print(dataset_augmentated.__len__())
-        # plt.imshow(dataset_augmentated[1][0])
-        # plt.show()
+    for i in range(N):
+        for data_augumentated_type in augumentated_type_list:
+            data_transform = get_transform_for_data_augmentation(
+                augumentated_type=data_augumentated_type
+            )
+            dataset_augmentated = Dataset_augmentation(
+                root=image_dir, transform=data_transform)
+            print(dataset_augmentated.__len__())
+            # plt.imshow(dataset_augmentated[1][0])
+            # plt.show()
 
-        save_augumentated_images(
-            dataset_augmentated, augumentated_type=data_augumentated_type)
-        print(f'finish {data_augumentated_type}')
-        print('='*20)
+            save_augumentated_images(
+                dataset_augmentated, augumentated_type=data_augumentated_type+f'{i}')
+            print(f'finish {data_augumentated_type}')
+            print('='*20)
 
     # delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
 
