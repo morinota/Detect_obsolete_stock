@@ -94,6 +94,7 @@ def train_model(model: models.ResNet, train_dataloader: DataLoader, train_datase
 
                 # statistics
                 running_loss += loss.item() * inputs.size(0)
+                print(torch.sum(preds == labels.data))
                 running_corrects += torch.sum(preds == labels.data)
 
             epoch_loss = running_loss / train_dataset.__len__()
