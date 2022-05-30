@@ -50,12 +50,9 @@ class Dataset_image_recognition(Dataset):
             class_dir = os.path.join(self.root, class_name)
             for root, _, fnames in sorted(os.walk(class_dir, followlinks=True)):
                 for fname in sorted(fnames):
-
-                    # オリジナルの画像だけ取ってくる。
-                    if re.compile(pattern='[0-9]+\.(jpg|JPG)').search(fname):
-                        path = os.path.join(root, fname)
-                        item = (path, self.class_to_idx[class_name])
-                        images.append(item)
+                    path = os.path.join(root, fname)
+                    item = (path, self.class_to_idx[class_name])
+                    images.append(item)
 
         return images
 
