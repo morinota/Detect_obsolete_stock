@@ -12,6 +12,7 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 import torchvision
 import albumentations as albu  # Data Augmentation用
+from PIL import Image
 
 
 class Dataset_image_recognition(Dataset):
