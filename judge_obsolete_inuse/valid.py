@@ -65,7 +65,7 @@ def conduct_visualize_validation(model:models.ResNet):
     transform_valid = transforms.Compose(
         [transforms.Resize(size=(256, 256)), transforms.ToTensor()])
     dataset_valid = Dataset_augmentation(
-        root=image_dir, transform=None)
+        root=image_dir, transform=transform_valid)
     dataloader_valid = DataLoader(dataset=dataset_valid, batch_size=1)
     visualize_model(model, dataloader_valid, dataset_valid, num_images=4)
 
