@@ -49,9 +49,10 @@ def visualize_model(model, valid_dataloader: DataLoader, valid_dataset: Dataset_
             for j in range(inputs.size()[0]):
                 images_so_far += 1
                 ax = fig.add_subplot(num_images//2, 2, images_so_far)
+                print(class_names[preds[j]], class_names[labels[j]])
                 ax.axis('off')
-                ax.set_title('predicted: {}  label: {}'
-                             .format(class_names[preds[j]], class_names[labels[j]]))
+                # ax.set_title('predicted: {}  label: {}'
+                #              .format(class_names[preds[j]], class_names[labels[j]]))
                 ax.imshow(tensor_to_np(inputs.cpu().data[j]))
 
                 if images_so_far == num_images:
