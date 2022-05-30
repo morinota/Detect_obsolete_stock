@@ -1,4 +1,3 @@
-from judge_obsolete_inuse.data_augumentation import delete_data_augmentated_files
 from my_dataset import Dataset_image_recognition
 import torch
 import torch.nn as nn
