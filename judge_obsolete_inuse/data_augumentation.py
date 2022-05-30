@@ -169,7 +169,7 @@ def delete_data_augmentated_files(dataset_augmentated: Dataset_augmentation):
                     _delete_file(path=file_path)
 
 
-def main():
+def conduct_offline_data_augmentation():
     image_dir = Config.image_dir_inuse_obsolete
 
     # 元の画像に対して、Data Augumentationを実施していく
@@ -198,8 +198,8 @@ def main():
         print(f'finish {data_augumentated_type}')
         print('='*20)
 
-    delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
+    # delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
 
 
 if __name__ == '__main__':
-    main()
+    conduct_offline_data_augmentation()

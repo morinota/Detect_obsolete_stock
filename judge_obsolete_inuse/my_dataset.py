@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from typing import Dict, Tuple, List
 import torch
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader
@@ -13,46 +14,76 @@ import torchvision
 import albumentations as albu  # Data Augmentation用
 
 
-class MyDataset(Dataset):
-    IMG_EXTENSIONS = [".jpg", ".jpeg", ".png", ".bmp"]
+class Dataset_image_recognition(Dataset):
+    def __init__(self, root: str, transform=None) -> None:
+        self.root = root
 
-    def __init__(self, img_dir: str, transform=None) -> None:
-        self.img_paths = self._get_img_paths(img_dir)
-        print(self.img_paths)
+        self.classes, self.class_to_idx = self._find_classes(root)
+        self.samples = self._make_dataset()
+        self.targets = [s[1] for s in self.samples]
         self.transform = transform
 
-    def __getitem__(self, index):
-        # index のサンプルが要求されたときに返す処理を実装
+    def _find_classes(self, img_dir: str) -> Tuple[List, Dict]:
+        """Finds the class folders in a dataset.
 
-        path = self.img_paths[index]
+        Parameters
+        ----------
+        img_dir : str
+            Root directory path.
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        classes = [d.name for d in os.scandir(
+            img_dir) if d.is_dir()]  # 各クラスのdirのパスを取得
+        classes.sort()
+        class_to_idx = {classes[i]: i for i in range(len(classes))}
+        return classes, class_to_idx
+
+    def _make_dataset(self):
+        """指定したディレクトリ内の画像ファイルのパス一覧を取得するinnor関数
+        """
+        images = []
+        for class_name in sorted(self.class_to_idx.keys()):
+            class_dir = os.path.join(self.root, class_name)
+            for root, _, fnames in sorted(os.walk(class_dir, followlinks=True)):
+                for fname in sorted(fnames):
+
+                    # オリジナルの画像だけ取ってくる。
+                    if re.compile(pattern='[0-9]+\.(jpg|JPG)').search(fname):
+                        path = os.path.join(root, fname)
+                        item = (path, self.class_to_idx[class_name])
+                        images.append(item)
+
+        return images
+
+    def __getitem__(self, index):
+        """index のサンプルが要求されたときに返す処理を実装
+
+        Parameters
+        ----------
+        index : _type_
+            _description_
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+
+        path, target = self.samples[index]
         # 入力側の画像データを配列で読み込み
-        image = cv2.imread(filename=path, flags=cv2.IMREAD_COLOR)
-        # BGRからRGBに配列の順序を変換?
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
-        # 正規化?
-        image /= 255.0
+        image: Image.Image = Image.open(path)
+        image = image.convert(mode='RGB')
         if self.transform is not None:
             image = self.transform(image)
 
-        # クラスラベルの指定
-        label = path.split('/')[-2]
-
-        # 返値
-        return image, label
+        return image, target  # 返値
 
     def __len__(self):
-        return len(self.img_paths)
-
-    def _get_img_paths(self, img_dir):
-        """指定したディレクトリ内の画像ファイルのパス一覧を取得するinnor関数
-        """
-        class_dirs = glob(pathname=img_dir+'/*')  # 各クラスのdirのパスを取得
-        img_paths = []
-        for class_dir in class_dirs:
-            for img_path in glob(os.path.join(class_dir, '*.jpg')):
-                img_paths.append(img_path)
-
-        return img_paths
+        return len(self.samples)
 
 
 def imshow(img):

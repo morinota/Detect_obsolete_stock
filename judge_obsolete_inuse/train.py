@@ -2,12 +2,13 @@
 from email.mime import image
 from turtle import back
 from typing import List
+from judge_obsolete_inuse.data_augumentation import Dataset_augmentation
 from torch import Tensor
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from torchvision import models
 from config import Config
 import time
@@ -15,7 +16,7 @@ import copy
 from tqdm import tqdm
 
 
-def train_model(model: models.ResNet, train_dataloader: DataLoader):
+def train_model(model: models.ResNet, train_dataloader: DataLoader, train_dataset: Dataset):
     """modelオブジェクトとDataLoaderオブジェクトを渡して、モデルの学習を行う.
 
     Parameters
@@ -45,59 +46,81 @@ def train_model(model: models.ResNet, train_dataloader: DataLoader):
     exp_lr_scheduler = optim.lr_scheduler.StepLR(
         optimizer=optimizer_ft, step_size=7, gamma=0.1
     )
+
     # GPUのキャッシュクリア
     torch.cuda.empty_cache()
 
-    since = time.time()
-    best_model_wt = copy.deepcopy(model.state_dict())
+    best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
     num_epochs = 25
+
+    since = time.time()
+
     # 学習
     for epoch in range(num_epochs):
-        print(f'Epoch {epoch} / {num_epochs-1}')
+        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
 
         # Each epoch has a training and validation phase
         for phase in ['train', 'val']:
             if phase == 'train':
                 exp_lr_scheduler.step()
-                model.train()  # 学習モードに移行
+                model.train()  # Set model to training mode
             else:
-                model.eval()  # 推論モードに移行
+                model.eval()   # Set model to evaluate mode
 
-            running_loss = 0.0  # 損失関数の値
-            running_corrects = 0  # 正解率?
+            running_loss = 0.0
+            running_corrects = 0
 
-            # 1バッチずつ学習させていく.
-            for i, batch in enumerate(tqdm(train_dataloader)):
-
-                # batchにはそのミニバッチのimages, labelsが入っている。
-                images: List[Tensor]
-                labels: List[Tensor]
-                images, labels = batch
-
-                # 指定のdevice(=GPU)にTensorを転送する(ListやDictにTensorが入ってるから)
-                images = list(image.to(device) for image in images)
-                labels = list(label.to(device) for label in labels)
+            # Iterate over data.
+            for inputs, labels in train_dataloader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
                 # zero the parameter gradients
-                optimizer_ft.zero_grad()  # 前のバッチで計算されたgradをリセット
-                # 誤差関数の値を取得?
-                loss_dict = model(images, labels)
+                optimizer_ft.zero_grad()
 
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(images)
+                    outputs = model(inputs)
                     # tensor(max, max_indices)なのでpredは0,1のラベル
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
-                        loss.backward()  # 誤差逆伝搬で、各パラメータの勾配gradの値を計算(実はgradは累算してる!だからzero_gradを使ってる)
-                        optimizer_ft.step()  # - grad＊学習率を使って、パラメータの値を更新
+                        loss.backward()
+                        optimizer_ft.step()
 
-                # statistics (1バッチ毎の指標の計算)
-                running_loss += loss.item() * images.size(0)
+                # statistics
+                running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
+
+            epoch_loss = running_loss / train_dataset.__len__()
+            epoch_acc = running_corrects.double() / train_dataset.__len__()
+
+            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
+                phase, epoch_loss, epoch_acc))
+
+            # deep copy the model
+            if phase == 'val' and epoch_acc > best_acc:
+                best_acc = epoch_acc
+                best_model_wts = copy.deepcopy(model.state_dict())
+
+        print()
+
+    time_elapsed = time.time() - since
+    print('Training complete in {:.0f}m {:.0f}s'.format(
+        time_elapsed // 60, time_elapsed % 60))
+    print('Best val Acc: {:4f}'.format(best_acc))
+
+    # load best model weights
+    model.load_state_dict(state_dict=best_model_wts)
+
+    # save weight
+    model_path = 'model.pth'
+    # model.state_dict()として保存した方が無駄な情報を削れてファイルサイズを小さくできるらしい.
+    torch.save(model.state_dict(), model_path)
+
+    return model
