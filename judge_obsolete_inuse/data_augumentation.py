@@ -183,6 +183,11 @@ def conduct_offline_data_augmentation(N=100):
         'color_jitter',  # ランダムに明るさ、コントラスト、彩度、色相を変化させる.
         'random_resized_crop',  # ランダムに切り抜いた後にリサイズを行う.
     ]
+
+    dataset_augmentated = Dataset_augmentation(
+        root=image_dir, transform=None)
+    delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
+
     for data_augumentated_type in augumentated_type_list:
         for i in range(N):
             data_transform = get_transform_for_data_augmentation(
@@ -198,8 +203,6 @@ def conduct_offline_data_augmentation(N=100):
                 dataset_augmentated, augumentated_type=(str(i) + data_augumentated_type))
         print(f'finish {data_augumentated_type}')
         print('='*20)
-
-    # delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
 
 
 if __name__ == '__main__':
