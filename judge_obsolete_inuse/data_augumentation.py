@@ -183,8 +183,8 @@ def conduct_offline_data_augmentation(N=100):
         'color_jitter',  # ランダムに明るさ、コントラスト、彩度、色相を変化させる.
         'random_resized_crop',  # ランダムに切り抜いた後にリサイズを行う.
     ]
-    for i in range(N):
-        for data_augumentated_type in augumentated_type_list:
+    for data_augumentated_type in augumentated_type_list:
+        for i in range(N):
             data_transform = get_transform_for_data_augmentation(
                 augumentated_type=data_augumentated_type
             )
