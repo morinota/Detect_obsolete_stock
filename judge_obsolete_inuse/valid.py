@@ -13,6 +13,7 @@ import copy
 from tqdm import tqdm
 import numpy as np
 from data_augumentation import Dataset_augmentation
+from torchvision import models, transforms
 
 
 def tensor_to_np(inp):
@@ -61,6 +62,8 @@ def visualize_model(model, valid_dataloader: DataLoader, valid_dataset: Dataset_
 
 def conduct_visualize_validation(model:models.ResNet):
     image_dir = Config.image_dir_inuse_obsolete
+    transform_valid = transforms.Compose(
+        [transforms.Resize(size=(256, 256)), transforms.ToTensor()])
     dataset_valid = Dataset_augmentation(
         root=image_dir, transform=None)
     dataloader_valid = DataLoader(dataset=dataset_valid, batch_size=1)
