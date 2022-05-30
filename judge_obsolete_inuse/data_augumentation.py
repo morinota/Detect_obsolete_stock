@@ -186,10 +186,6 @@ def conduct_offline_data_augmentation(N=100):
         'random_resized_crop',  # ランダムに切り抜いた後にリサイズを行う.
     ]
 
-    dataset_augmentated = Dataset_augmentation(
-        root=image_dir, transform=None)
-    delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
-
     for data_augumentated_type in augumentated_type_list:
         for i in range(N):
             data_transform = get_transform_for_data_augmentation(
