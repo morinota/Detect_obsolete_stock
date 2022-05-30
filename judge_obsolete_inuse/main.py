@@ -24,7 +24,7 @@ def main():
         root=image_dir, transform=transform_train
     )
     # create dataloader for learning
-    dataloader = DataLoader(dataset=dataset, batch_size=1)
+    dataloader = DataLoader(dataset=dataset, batch_size=2)
     # create model object
     model = create_model()
 
