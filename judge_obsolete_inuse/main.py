@@ -9,6 +9,7 @@ from config import Config
 from data_augumentation import conduct_offline_data_augmentation
 from model import create_model
 from train import train_model
+from valid import conduct_visualize_validation
 
 
 def main():
@@ -29,8 +30,11 @@ def main():
     model = create_model()
 
     # train model
-    train_model(model=model, train_dataloader=dataloader,
-                train_dataset=dataset)
+    model = train_model(model=model, train_dataloader=dataloader,
+                        train_dataset=dataset)
+
+    # visualize validation estimation
+    conduct_visualize_validation(model)
 
 
 if __name__ == '__main__':
