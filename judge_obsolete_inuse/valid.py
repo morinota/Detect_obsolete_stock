@@ -42,7 +42,7 @@ def visualize_model(model, valid_dataloader: DataLoader, valid_dataset: Dataset_
         print(class_names[labels])
         outputs = model(inputs) # 訓練後のNNに画像を入力
         _, predicted = torch.max(outputs, 1) # #入力した画像の行列の最大値（もっとも確率の高いもの）を返す
-
+        print(outputs)
         print('='*20)
 
         
