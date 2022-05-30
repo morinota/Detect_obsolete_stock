@@ -38,28 +38,14 @@ def visualize_model(model, valid_dataloader: DataLoader, valid_dataset: Dataset_
     class_names = {idx: label for label,
                    idx in valid_dataset.class_to_idx.items()}
 
-    with torch.no_grad():
-        for i, (inputs, labels) in enumerate(valid_dataloader):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
+    for inputs, labels in valid_dataloader:
+        print(class_names[labels])
+        outputs = model(inputs) # 訓練後のNNに画像を入力
+        _, predicted = torch.max(outputs, 1) # #入力した画像の行列の最大値（もっとも確率の高いもの）を返す
 
-            outputs = model(inputs)
-            _, preds = torch.max(outputs, 1)
+        print('='*20)
 
-            for j in range(inputs.size()[0]):
-                images_so_far += 1
-                ax = fig.add_subplot(num_images//2, 2, images_so_far)
-                print(preds[j], labels[j])
-                # print(class_names[preds[j]], class_names[labels[j]])
-                ax.axis('off')
-                # ax.set_title('predicted: {}  label: {}'
-                #              .format(class_names[preds[j]], class_names[labels[j]]))
-                ax.imshow(tensor_to_np(inputs.cpu().data[j]))
-
-                if images_so_far == num_images:
-                    model.train(mode=was_training)
-                    return
-        model.train(mode=was_training)
+        
 
 
 def conduct_visualize_validation(model:models.ResNet):
