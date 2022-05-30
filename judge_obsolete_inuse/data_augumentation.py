@@ -195,9 +195,9 @@ def conduct_offline_data_augmentation(N=100):
             # plt.show()
 
             save_augumentated_images(
-                dataset_augmentated, augumentated_type=data_augumentated_type+f'{i}')
-            print(f'finish {data_augumentated_type}')
-            print('='*20)
+                dataset_augmentated, augumentated_type=(str(i) + data_augumentated_type))
+        print(f'finish {data_augumentated_type}')
+        print('='*20)
 
     # delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
 
