@@ -24,6 +24,7 @@ def train_model(model: models.ResNet, train_dataloader: DataLoader, train_datase
     train_dataloader : DataLoader
         _description_
     """
+    print('len of train data is {}'.format(train_dataset.__len__()))
     # 演算を行うデバイスを設定
     # GPUを使えるかどうかに応じてtorch.deviceオブジェクトを生成
     # torch.deviceはテンソルをどのデバイスに割り当てるかを表すクラス。
