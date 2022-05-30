@@ -1,6 +1,4 @@
 from my_dataset import Dataset_image_recognition
-import imp
-from judge_obsolete_inuse.data_augumentation import delete_data_augmentated_files
 import torch
 import torch.nn as nn
 import torch.optim as optim
