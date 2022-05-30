@@ -152,7 +152,9 @@ def get_transform_for_data_augmentation(augumentated_type='horizontal_frip'):
     return transforms.Compose(transforms=transforms_data_aug)
 
 
-def delete_data_augmentated_files(dataset_augmentated: Dataset_augmentation):
+def delete_data_augmentated_files(image_dir):
+    dataset_augmentated = Dataset_augmentation(
+        root=image_dir, transform=None)
 
     def _delete_file(path: str):
         os.remove(path)
@@ -169,7 +171,7 @@ def delete_data_augmentated_files(dataset_augmentated: Dataset_augmentation):
                     _delete_file(path=file_path)
 
 
-def conduct_offline_data_augmentation(N=100):
+def conduct_offline_data_augmentation(N=1):
     image_dir = Config.image_dir_inuse_obsolete
 
     # 元の画像に対して、Data Augumentationを実施していく
@@ -206,4 +208,7 @@ def conduct_offline_data_augmentation(N=100):
 
 
 if __name__ == '__main__':
-    conduct_offline_data_augmentation()
+    image_dir = Config.image_dir_inuse_obsolete
+    # conduct_offline_data_augmentation()
+
+    delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)
