@@ -15,7 +15,7 @@ from valid import conduct_visualize_validation
 def main():
     image_dir = Config.image_dir_inuse_obsolete
 
-    delete_data_augmentated_files(image_dir)  # 最初にオリジナル画像のみにしておく
+    # delete_data_augmentated_files(image_dir)  # 最初にオリジナル画像のみにしておく
     # data augmentation
     conduct_offline_data_augmentation()
     # Transform を作成する。
