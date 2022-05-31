@@ -207,4 +207,3 @@ if __name__ == '__main__':
     image_dir = Config.image_dir_inuse_obsolete
     # conduct_offline_data_augmentation()
 
-    delete_data_augmentated_files(dataset_augmentated=dataset_augmentated)

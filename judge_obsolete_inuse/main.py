@@ -15,8 +15,8 @@ from valid import conduct_visualize_validation
 def main():
     image_dir = Config.image_dir_inuse_obsolete
 
-    # data augmentation
     delete_data_augmentated_files(image_dir)  # 最初にオリジナル画像のみにしておく
+    # data augmentation
     conduct_offline_data_augmentation()
     # Transform を作成する。
     transform_train = transforms.Compose(
@@ -36,6 +36,8 @@ def main():
 
     # visualize validation estimation
     conduct_visualize_validation(model)
+
+    delete_data_augmentated_files(image_dir)  # 最後にまた、オリジナル画像のみにしておく
 
 
 if __name__ == '__main__':
