@@ -56,7 +56,7 @@ def train_model(model: models.ResNet, train_dataloader: DataLoader, train_datase
 
     # 学習
     for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('Epoch {}/{}'.format(epoch+1, num_epochs))
         print('-' * 10)
 
         # Each epoch has a training and validation phase

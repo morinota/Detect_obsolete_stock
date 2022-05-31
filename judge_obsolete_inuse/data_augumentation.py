@@ -171,7 +171,7 @@ def delete_data_augmentated_files(image_dir):
                     _delete_file(path=file_path)
 
 
-def conduct_offline_data_augmentation(N=100):
+def conduct_offline_data_augmentation(N=1):
     image_dir = Config.image_dir_inuse_obsolete
 
     # 元の画像に対して、Data Augumentationを実施していく
@@ -205,5 +205,4 @@ def conduct_offline_data_augmentation(N=100):
 
 if __name__ == '__main__':
     image_dir = Config.image_dir_inuse_obsolete
-    # conduct_offline_data_augmentation()
-
+    conduct_offline_data_augmentation(1)
