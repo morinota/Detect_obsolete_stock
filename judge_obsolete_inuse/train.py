@@ -88,33 +88,12 @@ def train_model(model: models.ResNet, train_dataloader: DataLoader, train_datase
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
-                        loss.backward()
-                        optimizer_ft.step()
+                        loss.backward()  # 誤差逆伝搬で、各パラメータの勾配gradの値を計算(実は累算してる!だからzero_gradを使ってる)
+                        optimizer_ft.step()  # - grad＊学習率を使って、パラメータを更新
 
-                # statistics
-                running_loss += loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.data)
-
-            epoch_loss = running_loss / train_dataset.__len__()
-            epoch_acc = running_corrects.double() / train_dataset.__len__()
-
-            print('{} Loss: {:.4f} Acc: {:.4f}'.format(
-                phase, epoch_loss, epoch_acc))
-
-            # deep copy the model
-            if phase == 'val' and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                best_model_wts = copy.deepcopy(model.state_dict())
-
-        print()
+        print(f'epoch {epoch}/{num_epochs} : loss {loss}')
 
     time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
-        time_elapsed // 60, time_elapsed % 60))
-    print('Best val Acc: {:4f}'.format(best_acc))
-
-    # load best model weights
-    model.load_state_dict(state_dict=best_model_wts)
 
     # save weight
     model_path = 'model.pth'
