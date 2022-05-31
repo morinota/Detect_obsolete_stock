@@ -206,3 +206,4 @@ def conduct_offline_data_augmentation(N=1):
 if __name__ == '__main__':
     image_dir = Config.image_dir_inuse_obsolete
     conduct_offline_data_augmentation(1)
+    # delete_data_augmentated_files(image_dir)
